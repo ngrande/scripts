@@ -5,7 +5,6 @@
 import shutil
 import os
 import re
-import sys
 import argparse
 
 re_line_beginning = re.compile(r'^[ \t]+')
@@ -14,6 +13,7 @@ TAB = '\t'
 SPACE = ' '
 
 def get_line_beginning(line):
+	""" return the beginning of the line (just spaces and tabs) """
 	re_res = re_line_beginning.search(line)
 	if re_res:
 		return line[:re_res.span()[1]]
@@ -31,7 +31,6 @@ def is_spaced(line):
 def tabify(line, tabify_num):
 	""" tabify a line - replace n-spaces with a TAB """
 	beginning = get_line_beginning(line)
-	print(len(beginning))
 	num_of_spaces = 0
 	
 	spaceless_line = line[len(beginning):]
@@ -75,7 +74,7 @@ if __name__ == '__main__':
 		print("Error occured ({!s}). Don't worry - will just restore the old file...".format(ex))
 		shutil.copyfile(temp_name, args.filename)
 
-	print("DONE")
 	os.remove(temp_name)
+	print("DONE")
 
 # vim: tabstop=4 shiftwidth=4 noexpandtab ft=python
