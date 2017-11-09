@@ -90,7 +90,7 @@ if __name__ == '__main__':
 		print_help()
 		sys.exit(1)
 	else:
-		files = sys.argv[1:len(sys.argv) - 2]
+		files = sys.argv[1:len(sys.argv) - 1]
 		try:
 			shiftwidth = int(sys.argv[-1])
 		except ValueError as ex:
@@ -98,7 +98,6 @@ if __name__ == '__main__':
 			sys.exit(2)
 
 	for fl in files:
-		print(fl)
 		process_file(fl, shiftwidth)
 
 	print("DONE")
