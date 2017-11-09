@@ -5,12 +5,14 @@
 import shutil
 import os
 import re
-import argparse
+import sys
+# import argparse
 
 re_line_beginning = re.compile(r'^[ \t]+')
 re_spaces = re.compile(r'^[ ]')
 TAB = '\t'
 SPACE = ' '
+
 
 def get_line_beginning(line):
 	""" return the beginning of the line (just spaces and tabs) """
@@ -48,33 +50,57 @@ def tabify(line, tabify_num):
 	return spaceless_line
 
 
-if __name__ == '__main__':
-	parser = argparse.ArgumentParser()
-	parser.add_argument("filename", help="path to file to tabify", type=str)
-	parser.add_argument("shiftwidth", help="so many spaces will be merged into a TAB", type=int)
-	args = parser.parse_args()
-	
+def process_file(filename, shiftwidth):
 	buffer = []
-	temp_name = args.filename + '.tabify'
+	temp_name = filename + '.tabify'
 	# create backup copy of file before tabifying
-	shutil.copyfile(args.filename, temp_name)
+	shutil.copyfile(filename, temp_name)
 	try:
-		with open(args.filename, 'r') as in_file:
+		with open(filename, 'r') as in_file:
 			for line in in_file:
 				if not is_spaced(line):
 					buffer.append(line)
 				else:
-					tabified_line = tabify(line, args.shiftwidth)
+					tabified_line = tabify(line, shiftwidth)
 					buffer.append(tabified_line)
 
-		with open(args.filename, 'w') as out_file:
+		with open(filename, 'w') as out_file:
 			out_file.write(''.join(buffer))
 
 	except Exception as ex:
 		print("Error occured ({!s}). Don't worry - will just restore the old file...".format(ex))
-		shutil.copyfile(temp_name, args.filename)
+		shutil.copyfile(temp_name, filename)
 
 	os.remove(temp_name)
+
+
+def print_help():
+	print("Usage: files shiftwidth".format(sys.argv[0]))
+
+
+if __name__ == '__main__':
+	# parser = argparse.ArgumentParser()
+	# parser.add_argument("filename", help="path to file to tabify", type=str)
+	# parser.add_argument("shiftwidth", help="so many spaces will be merged into a TAB", type=int)
+	# args = parser.parse_args()
+
+	files = []
+	shiftwidth = None
+	if len(sys.argv) < 3:
+		print_help()
+		sys.exit(1)
+	else:
+		files = sys.argv[1:len(sys.argv) - 2]
+		try:
+			shiftwidth = int(sys.argv[-1])
+		except ValueError as ex:
+			print("last argument has to be an integer")
+			sys.exit(2)
+
+	for fl in files:
+		print(fl)
+		process_file(fl, shiftwidth)
+
 	print("DONE")
 
 # vim: tabstop=4 shiftwidth=4 noexpandtab ft=python
