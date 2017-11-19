@@ -12,6 +12,8 @@ echo $check_mntpoint
 eval $check_mntpoint
 ret_code=$?
 
+# IF THIS FAILS it might be because your known_hosts are wrong
+# run ssh-copy-id
 sudo sshfs -o allow_other pi@$remote_pi:/home/pi/ /mnt/$remote_pi/
 if [ $? = 0 ]; then
 	echo "Mounted $remote_pi successfully!"
