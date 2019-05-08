@@ -10,7 +10,7 @@ analog="pci-0000_00_1b.0.analog-stereo"
 active=$(pacmd list-sinks | grep "RUNNING" -B3 | grep "name:" | awk '{print $2}')
 
 toggle_out=0
-active_name=""
+active_name="UNKNOWN"
 toggle_name=""
 
 if [ "$active" == "<alsa_output.$usb>" ]; then
@@ -37,10 +37,11 @@ fi
 
 if [ $toggle_out == 0 ]; then
 	# could not determine current state
-	echo "ERROR"
-else
-	echo $toggle_name
-	# magic 20?
-	cmd="pactl move-sink-input 20 alsa_output.$toggle_out"
-	eval $cmd
+	# if ERROR we choose analog!
+	toggle_name=$analog_name
+	toggle_out=$analog
 fi
+echo $toggle_name
+# magic 20?
+cmd="pactl move-sink-input 20 alsa_output.$toggle_out"
+eval $cmd
