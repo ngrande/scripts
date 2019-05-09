@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# script for i3blocks assumes you have arch linux running
+# hope you have rofi installed...
+
+if [ "$BLOCK_BUTTON" == "1" ]; then
+
+	repo=$(pacman -Si linux | grep -i version | awk '{print $3}')
+	inst=$(pacman -Q linux | awk '{print $2}')
+	curr=$(uname -r)
+	echo -e "Repo: $repo\nInst: $inst\nCurr: $curr" | rofi -dmenu -lines 3 -hide-scrollbar -p "Kernel" -width -30 &> /dev/null
+	# we are done, return from here
+	return
+
+fi
+
+
 # get the version part (like "5.0")
 uname_r=$(uname -r | awk -F - '{print $1}')
 kernel_vers=$(echo $uname_r | awk -F . '{print $1"."$2}')
