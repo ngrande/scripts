@@ -11,7 +11,7 @@ then
 	cal | rofi \
 		-dmenu \
 		-lines 7 \
-		-p "Today - $(date +%d)" \
+		-p "$(date +%A" - "%d".")" \
 		-location 3 \
 		-yoffset 20 \
 		-width -22
