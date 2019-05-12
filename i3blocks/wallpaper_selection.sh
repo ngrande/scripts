@@ -23,8 +23,6 @@ then
 		done
 	fi
 
-	echo "CURR: $current_ind"
-
 	chosen=$(echo "$pictures" | rofi -dmenu -lines $lines -width -50 -p ${walldir} -a $current_ind)
 	selected=$(echo $chosen | wc -w)
 	if [ $selected == 1 ];
