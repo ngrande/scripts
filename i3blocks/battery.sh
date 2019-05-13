@@ -6,6 +6,13 @@
 
 #                     head -> full text
 bat=$(/usr/lib/i3blocks/battery | head -n 1)
+if [ $? -ne 0 ];
+then
+	exit $?
+elif [ "$bat" == "" ];
+then
+	exit 127
+fi
 
 perc=$(echo $bat | awk -F "%" '{print $1}')
 symbol=" "
