@@ -3,12 +3,12 @@
 # script for i3blocks assumes you have arch linux running
 # hope you have rofi installed...
 
-if [ "$BLOCK_BUTTON" == "1" ]; then
+if [ $BLOCK_BUTTON -eq 1 ]; then
 
 	repo=$(pacman -Si linux | grep -i version | awk '{print $3}')
 	inst=$(pacman -Q linux | awk '{print $2}')
 	curr=$(uname -r)
-	echo -e "Repo: $repo\nInst: $inst\nCurr: $curr" | rofi -dmenu -lines 3 -hide-scrollbar -p "Kernel" -width -30 &> /dev/null
+	echo -e "Repo: $repo\nInst: $inst\nCurr: $curr" | rofi -dmenu -lines 3 -hide-scrollbar -p "Kernel" -width -30 -a 2 &> /dev/null
 	# we are done, return from here
 	return
 
