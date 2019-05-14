@@ -13,6 +13,9 @@ case "$mem_type" in
 		line=$(free | tail -n -2 | head -n 1)
 		avail=$(echo $line | awk '{print $7}')
 		total=$(echo $line | awk '{print $2}')
+		# this is what htop would display
+		# and represents the memory which is no more
+		# available to new processes
 		used=$(($total - $avail))
 		;;
 	"SWAP")
