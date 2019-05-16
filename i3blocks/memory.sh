@@ -62,6 +62,9 @@ case "$display_mode" in
 		if [[ $res =~ ^\.[0-9]+ ]];
 		then
 			res="0$res"
+		elif [[ $res =~ ^[0-9]+\.[0-9]+ ]];
+		then
+			res="${res%%.*}%"
 		fi
 		;;
 	*)
