@@ -36,12 +36,22 @@ esac
 get_volume() {
 	# just get the last line...
 	line=$(amixer get $amixer_dev | tail -n 1)
-	state=$(echo $line | awk '{print $6}')
-	if [ "$state" == "[off]" ];
+	if [[ $line =~ \[off\] ]];
 	then
 		echo "MUTE"
 	else
-		echo $(echo $line | awk '{print $5}' | head -c -2 | tail -c +2)
+		echo $(echo $line | awk -F "%" '{print $1}' | awk -F "[" '{print $2"%"}') # | head -c -2 | tail -c +2)
+	fi
+}
+
+toggle() {
+	amixer set ${amixer_dev} toggle &>/dev/null
+}
+
+toggle_if_mute() {
+	if [ "$(get_volume)" == "MUTE" ];
+	then
+		toggle
 	fi
 }
 
@@ -53,11 +63,18 @@ case "$action" in
 		amixer set ${amixer_dev} ${delta}%- &>/dev/null
 		;;
 	"mute")
-		amixer set ${amixer_dev} toggle &>/dev/null
+		toggle
 		;;
 	"show")
 		get_volume
 		;;
+esac
+
+# if user changes volume of device but it's muted - we toggle it
+case "$action" in
+	"up" | "down")
+		toggle_if_mute
+	;;
 esac
 
 get_volume
