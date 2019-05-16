@@ -3,6 +3,7 @@
 # script to retrieve exact memory usage stats
 
 mem_type=$1
+display_mode=$2
 line=""
 used=0
 total=0
@@ -25,7 +26,7 @@ case "$mem_type" in
 		;;
 	*)
 		echo "specify MEM or SWAP"
-		return 1
+		exit 1
 		;;
 esac
 
@@ -46,9 +47,27 @@ display_with_unit() {
 }
 
 res=$(display_with_unit $used)
-if [ "$2" == "TOTAL" ];
-then
-	res="$res $(echo "/ $(display_with_unit $total)")"
-fi
+
+case "$display_mode" in
+	"")
+		# default: do nothing fancy
+		;;
+	"TOTAL")
+		res="$res $(echo "/ $(display_with_unit $total)")"
+		;;
+	"%" | "PERCENT")
+		# calc the percentage
+		# use bc for decimal calculations
+		res="$(echo "scale=2;$used * 100 / $total" | bc)%"
+		if [[ $res =~ ^\.[0-9]+ ]];
+		then
+			res="0$res"
+		fi
+		;;
+	*)
+		echo "INVALID MODE. Use TOTAL or % (PERCENT)"
+		exit 1
+		;;
+esac
 
 echo $res
