@@ -43,8 +43,7 @@ do
 	i=$(($i+1))
 	list="$list$sink\n"
 done
-selected=$( printf "$list" | rofi -dmenu -width -50 -lines 10 -p "Choose $mode" -a $active_ind)
+selected=$( printf $list | rofi -dmenu -width -50 -lines $(printf $list | wc --lines) -p "Choose $mode" -a $active_ind)
 
-# magic 20?
 cmd="pacmd set-default-${mode} alsa_output.${selected}"
 eval $cmd
