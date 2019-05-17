@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # https://www.digitalocean.com/community/tutorials/how-to-use-sshfs-to-mount-remote-file-systems-over-ssh
 remote_pi=$1
@@ -24,5 +24,5 @@ else
 fi
 
 echo "Already mounted"
-exit 1"
+exit 1
 
