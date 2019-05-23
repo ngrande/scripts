@@ -45,5 +45,10 @@ do
 done
 selected=$( printf $list | rofi -dmenu -width -50 -lines $(printf $list | wc --lines) -p "Choose $mode" -a $active_ind)
 
-cmd="pacmd set-default-${mode} alsa_output.${selected}"
-eval $cmd
+# this command sometimes work, sometimes it has no effect
+pacmd set-default-${mode} alsa_output.${selected}
+# thus we have to assign each sink input to the new sink
+pactl list short sink-inputs | while read stream; do
+	stream_id=$(echo $stream | cut '-d ' -f1)
+	pactl move-sink-input "$stream_id" "alsa_output.${selected}"
+done
