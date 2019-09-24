@@ -9,10 +9,18 @@ import sys
 # import argparse
 
 re_line_beginning = re.compile(r'^[ \t]+')
+re_is_comment = re.compile(r'\s*[!#*/].*')
 re_spaces = re.compile(r'^[ ]')
 TAB = '\t'
 SPACE = ' '
 
+def is_comment_line(line):
+	""" checks wether this line is only part of a comment - do not tabify then """
+	# super simple and with no context (no special behavior per language)
+	if re_is_comment.match(line):
+		return True
+	else:
+		return False
 
 def get_line_beginning(line):
 	""" return the beginning of the line (just spaces and tabs) """
@@ -32,18 +40,19 @@ def is_spaced(line):
 
 def tabify(line, tabify_num):
 	""" tabify a line - replace n-spaces with a TAB """
+
 	beginning = get_line_beginning(line)
 	num_of_spaces = 0
-	
+
 	spaceless_line = line[len(beginning):]
 	for char in beginning:
 		if char == SPACE:
 			num_of_spaces += 1
 		else:
 			spaceless_line = char + spaceless_line
-	
+
 	tabs = int(num_of_spaces / tabify_num)
-	
+
 	for _ in range(0, tabs):
 		spaceless_line = '\t' + spaceless_line
 
@@ -58,7 +67,7 @@ def process_file(filename, shiftwidth):
 	try:
 		with open(filename, 'r') as in_file:
 			for line in in_file:
-				if not is_spaced(line):
+				if not is_spaced(line) or is_comment_line(line):
 					buffer.append(line)
 				else:
 					tabified_line = tabify(line, shiftwidth)
