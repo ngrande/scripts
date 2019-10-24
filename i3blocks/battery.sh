@@ -5,7 +5,7 @@
 # just using the i3blocks script...
 
 #                     head -> full text
-bat=$(/usr/lib/i3blocks/battery | head -n 1)
+bat=$(/usr/lib/i3blocks/battery/battery | head -n 1)
 if [ $? -ne 0 ];
 then
 	exit $?
