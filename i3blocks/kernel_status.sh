@@ -3,7 +3,7 @@
 # script for i3blocks assumes you have arch linux running
 # hope you have rofi installed...
 
-if [ $BLOCK_BUTTON -eq 1 ]; then
+if [ "$BLOCK_BUTTON" == "1" ]; then
 
 	repo=$(pacman -Si linux | grep -i version | awk '{print $3}')
 	inst=$(pacman -Q linux | awk '{print $2}')
@@ -15,30 +15,17 @@ if [ $BLOCK_BUTTON -eq 1 ]; then
 
 fi
 
-
-# get the version part (like "5.0")
-uname_r=$(uname -r | awk -F - '{print $1}')
-kernel_vers=$(echo $uname_r | awk -F . '{print $1"."$2}')
-if [ ${#uname_r} -gt 4 ]; then
-	# append patch version (like "5.0.3")
-	kernel_vers=$kernel_vers"."$(echo $uname_r | awk -F . '{print $3}')
-fi
-
-# get the rel part (like "arch1-1")
-#kernel_rel=$(uname -r | awk -F - '{print $2"-"$3}')
-kernel_rel=$(uname -r | awk -F "-arch" '{print $1"."$2}')
+active_short=$(uname -r | awk -F ".arch" '{print $1}')
+active_long=$(uname -r | awk -F "-arch" '{print $1".arch"$2}')
 # combine both to compare to package name (like "5.0.arch1-1")
 installed=$(pacman -Q linux | awk '{print $2}')
-
-#active=("$kernel_vers.$kernel_rel")
-active=("$kernel_rel")
 
 # first check if new kernel available for download
 repo=$(pacman -Si linux | grep Version | awk '{print $3}')
 
 if [ $installed != $repo ]; then
 	echo "AVAILABLE"
-elif [ $active != $installed ]; then
+elif [ $active_short != $installed ] && [ $active_long != $installed ]; then
 	echo "RESTART"
 else
 	echo "CURRENT"
