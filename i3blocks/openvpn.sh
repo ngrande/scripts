@@ -8,7 +8,7 @@ CONN_ARG=$1
 if [ "$BLOCK_BUTTON" == "1" ];
 then
 	CONN_ARG="connect"
-elif [ "$BLOCK_BUTTON" == "2" ];
+elif [ "$BLOCK_BUTTON" == "3" ];
 then
 	CONN_ARG="disconnect"
 fi
@@ -22,11 +22,11 @@ openvpn() {
 		sudo ln -sf /etc/resolv.conf.vwd /etc/resolv.conf
 		# this route breaks my internet connection but is added with the .ovpn
 		sudo ip route del default via 172.25.29.129 dev tun0 proto static metric 50
-		echo "connected."
+#		echo "connected."
 	elif [ "$CONN_ARG" == "disconnect" ]; then
 		/usr/bin/nmcli c down $VPN_CON_NAME
 		sudo ln -sf /etc/resolv.conf.private /etc/resolv.conf
-		echo "disconnected."
+#		echo "disconnected."
 	fi
 }
 
