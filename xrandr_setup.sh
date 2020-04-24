@@ -1,18 +1,28 @@
 #!/bin/bash
-exp="vwd-archer"
-if [ "$(hostname)" == "$exp" ]; then
-	# this is a good config but it my right vertical monitor is then not centered
-#	xrandr --output DVI-I-1 --primary
-#	xrandr --output DP-2 --auto --right-of DVI-I-1 --rotate right
-#	xrandr --output DP-3 --auto --left-of DVI-I-1
 
-	# this is with fixed values, but then the right vertical monitor is centered
-	# main monitor (middle)
-	xrandr --output DVI-I-1 --auto --primary --pos 2560x240
-	# right monitor vertical
-	xrandr --output DP-2 --auto --rotate right --pos 5120x0
-	# left monitor horizontal
-	xrandr --output DP-3 --auto --pos 0x240
+if [ $(xrandr --query | grep ' connected' | wc -l) -gt 1 ];
+then
+	xrandr --output eDP-1 --off
+	xrandr --output DP-1-2 --auto --primary
+	xrandr --output DP-1-3 --auto --right-of DP-1-2 --rotate right
+	xrandr --output DP-1-1 --auto --left-of DP-1-2 
 else
-	echo "This script was made especially for '$exp'! Will not run here on: $(hostname)"
+	dis=`xrandr | grep  "disconnected" | awk '{print $1}'`
+	for d in $dis; do
+		xrandr --output $d --off
+		echo $d
+	done
+	xrandr --output eDP-1 --primary
 fi
+xrandr --output eDP-1 --auto
+
+
+# reload the background, otherwise it is displayed awkardly on displays with
+# another resolution
+if [ -f ~/.fehbg ];
+then
+	~/.fehbg
+fi
+
+# this gets messed up
+setxkbmap -layout de
