@@ -19,14 +19,10 @@ openvpn() {
 		PW=$FIX_PW$AUTH_CODE
 		/usr/bin/nmcli c modify id $VPN_CON_NAME vpn.user-name $USER
 		echo $PW | /usr/bin/nmcli c up $VPN_CON_NAME --ask
-		sudo ln -sf /etc/resolv.conf.vwd /etc/resolv.conf
 		# this route breaks my internet connection but is added with the .ovpn
 		sudo ip route del default via 172.25.29.129 dev tun0 proto static metric 50
-#		echo "connected."
 	elif [ "$CONN_ARG" == "disconnect" ]; then
 		/usr/bin/nmcli c down $VPN_CON_NAME
-		sudo ln -sf /etc/resolv.conf.private /etc/resolv.conf
-#		echo "disconnected."
 	fi
 }
 
@@ -34,6 +30,8 @@ openvpn
 
 if [ "$(/usr/bin/nmcli c show --active | grep $VPN_CON_NAME)" ]; then
 	echo "active"
+	sudo ln -sf /etc/resolv.conf.vwd /etc/resolv.conf
 else
 	echo "inactive"
+	sudo ln -sf /etc/resolv.conf.private /etc/resolv.conf
 fi
