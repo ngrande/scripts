@@ -14,7 +14,13 @@ else
 	done
 	xrandr --output eDP-1 --primary
 fi
-xrandr --output eDP-1 --auto
+
+# in case the above mointors were not existing - we will setup every monitor we find
+# this should cover it if we dock to different monitors!
+for mon in $(xrandr --query | grep " connected" | awk '{print $1}')
+do 
+	xrandr --output $mon --auto
+done
 
 
 # reload the background, otherwise it is displayed awkardly on displays with
