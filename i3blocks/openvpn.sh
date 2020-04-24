@@ -17,11 +17,13 @@ openvpn() {
 	if [ "$CONN_ARG" == "connect" ]; then
 		AUTH_CODE=`oathtool --totp=sha1 -b $SECRET`
 		PW=$FIX_PW$AUTH_CODE
+		echo "connecting..."
 		/usr/bin/nmcli c modify id $VPN_CON_NAME vpn.user-name $USER
 		echo $PW | /usr/bin/nmcli c up $VPN_CON_NAME --ask > /dev/zero
 		# this route breaks my internet connection but is added with the .ovpn
 		sudo ip route del default via 172.25.29.129 dev tun0 proto static metric 50 > /dev/zero
 	elif [ "$CONN_ARG" == "disconnect" ]; then
+		echo "disconnecting..."
 		/usr/bin/nmcli c down $VPN_CON_NAME > /dev/zero
 	fi
 }
