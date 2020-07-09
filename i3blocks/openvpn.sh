@@ -33,6 +33,9 @@ openvpn
 if [ "$(/usr/bin/nmcli c show --active | grep $VPN_CON_NAME)" ]; then
 	echo "active"
 	sudo ln -sf /etc/resolv.conf.vwd /etc/resolv.conf
+elif [ "$(/usr/bin/nmcli c show --active | grep vwd-wifi)" ]; then
+	echo "vwd-wifi"
+	sudo ln -sf /etc/resolv.conf.vwd /etc/resolv.conf
 else
 	echo "inactive"
 	sudo ln -sf /etc/resolv.conf.private /etc/resolv.conf

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $(xrandr --query | grep ' connected' | wc -l) -gt 1 ];
+if [ $(xrandr --query | grep ' connected' | wc -l) -gt 3 ];
 then
 	xrandr --output eDP-1 --off
 	xrandr --output DP-1-2 --auto --primary
