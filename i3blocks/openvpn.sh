@@ -3,7 +3,18 @@ USER=$(cat ~/.openvpn_script | grep username | awk -F "=" '{print $2}')
 SECRET=$(cat ~/.openvpn_script | grep secret | awk -F "=" '{print $2}')
 FIX_PW=$(cat ~/.openvpn_script | grep password | awk -F "=" '{print $2}')
 VPN_CON_NAME=$(cat ~/.openvpn_script | grep connection | awk -F "=" '{print $2}')
+VWD_WIFI=$(cat ~/.openvpn_script | grep vwdwifi | awk -F "=" '{print $2}')
+DNS_SEARCH=$(cat ~/.openvpn_script | grep "dns-search" | awk -F "=" '{print $2}')
+DNS=$(cat ~/.openvpn_script | grep "dns=" | awk -F "=" '{print $2}')
 CONN_ARG=$1
+
+/usr/bin/nmcli connection modify $VPN_CON_NAME ipv4.ignore-auto-dns yes
+# set dns settings for vwd connections
+for con in $VPN_CON_NAME $VWD_WIFI
+do
+	/usr/bin/nmcli connection modify $con ipv4.dns-search "$DNS_SEARCH"
+	/usr/bin/nmcli connection modify $con ipv4.dns "$DNS"
+done
 
 if [ "$BLOCK_BUTTON" == "1" ];
 then
@@ -30,13 +41,17 @@ openvpn() {
 
 openvpn
 
+# !!!
+# adjust your DNS settings with nmcli:
+# nmcli con modify vwd-wifi ip4.dns-search "search more groups"
+
 if [ "$(/usr/bin/nmcli c show --active | grep $VPN_CON_NAME)" ]; then
 	echo "active"
-	sudo ln -sf /etc/resolv.conf.vwd /etc/resolv.conf
+#	sudo ln -sf /etc/resolv.conf.vwd /etc/resolv.conf
 elif [ "$(/usr/bin/nmcli c show --active | grep vwd-wifi)" ]; then
 	echo "vwd-wifi"
-	sudo ln -sf /etc/resolv.conf.vwd /etc/resolv.conf
+#	sudo ln -sf /etc/resolv.conf.vwd /etc/resolv.conf
 else
 	echo "inactive"
-	sudo ln -sf /etc/resolv.conf.private /etc/resolv.conf
+#	sudo ln -sf /etc/resolv.conf.private /etc/resolv.conf
 fi
