@@ -5,6 +5,7 @@ FIX_PW=$(cat ~/.openvpn_script | grep password | awk -F "=" '{print $2}')
 VPN_CON_NAME=$(cat ~/.openvpn_script | grep connection | awk -F "=" '{print $2}')
 VWD_WIFI=$(cat ~/.openvpn_script | grep vwdwifi | awk -F "=" '{print $2}')
 DNS_SEARCH=$(cat ~/.openvpn_script | grep "dns-search" | awk -F "=" '{print $2}')
+DNS_OPTS=$(cat ~/.openvpn_script | grep "dns-options" | awk -F "=" '{print $2}')
 DNS=$(cat ~/.openvpn_script | grep "dns=" | awk -F "=" '{print $2}')
 CONN_ARG=$1
 
@@ -14,6 +15,7 @@ for con in $VPN_CON_NAME $VWD_WIFI
 do
 	/usr/bin/nmcli connection modify $con ipv4.dns-search "$DNS_SEARCH"
 	/usr/bin/nmcli connection modify $con ipv4.dns "$DNS"
+	/usr/bin/nmcli connection modify $con ipv4.dns-options "$DNS_OPTS"
 done
 
 if [ "$BLOCK_BUTTON" == "1" ];
