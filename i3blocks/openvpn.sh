@@ -11,7 +11,7 @@ CONN_ARG=$1
 
 /usr/bin/nmcli connection modify $VPN_CON_NAME ipv4.ignore-auto-dns yes
 # set dns settings for vwd connections
-for con in $VPN_CON_NAME $VWD_WIFI
+for con in $VPN_CON_NAME $VWD_WIFI vwd-ethernet
 do
 	/usr/bin/nmcli connection modify $con ipv4.dns-search "$DNS_SEARCH"
 	/usr/bin/nmcli connection modify $con ipv4.dns "$DNS"
@@ -33,8 +33,9 @@ openvpn() {
 #		echo "connecting..."
 		/usr/bin/nmcli c modify id $VPN_CON_NAME vpn.user-name $USER
 		echo $PW | /usr/bin/nmcli c up $VPN_CON_NAME --ask > /dev/zero
+		/usr/bin/nmcli c up tun0
 		# this route breaks my internet connection but is added with the .ovpn
-		sudo ip route del default via 172.25.29.129 dev tun0 proto static metric 50 > /dev/zero
+		# sudo ip route del default via 172.25.29.129 dev tun0 proto static metric 50 > /dev/zero
 	elif [ "$CONN_ARG" == "disconnect" ]; then
 #		echo "disconnecting..."
 		/usr/bin/nmcli c down $VPN_CON_NAME > /dev/zero
