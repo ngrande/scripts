@@ -18,7 +18,12 @@ active="0"
 pacmd list-${mode}s | grep -E "linked by: [1-9][0-9]?"
 
 filter_name() {
-	echo $( echo $1 | awk -F "alsa_output." '{print $2}' | awk -F ">" '{print $1}')
+	name=$( echo $1 | awk -F "alsa_output." '{print $2}' | awk -F ">" '{print $1}')
+	if [ "x$name" == "x" ];
+	then
+		name=$(echo $1 | awk -F "bluez_sink." '{print $2}' | awk -F ">" '{print $1}')
+	fi
+	echo $name
 }
 
 if [ $? ];
@@ -29,7 +34,7 @@ then
 	active=$(filter_name $(echo $linked | awk '{print $2}'))
 fi
 
-avail=$(pacmd list-${mode}s | grep "name:" | grep "output" | awk -F "name:" '{print $2}')
+avail=$(pacmd list-${mode}s | grep "name:" | egrep "output|bluez" | awk -F "name:" '{print $2}')
 list=""
 active_ind=""
 i=0
