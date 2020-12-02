@@ -23,7 +23,8 @@ filter_name() {
 	then
 		name=$(echo $1 | awk -F "bluez_sink." '{print $2}' | awk -F ">" '{print $1}')
 	fi
-	echo $name
+#	echo $name
+	echo $(echo $1 | sed -E 's+(<|>)++g')
 }
 
 if [ $? ];
@@ -51,9 +52,9 @@ done
 selected=$( printf $list | rofi -dmenu -width -50 -lines $(printf $list | wc --lines) -p "Choose $mode" -a $active_ind)
 
 # this command sometimes work, sometimes it has no effect
-pacmd set-default-${mode} alsa_output.${selected}
+pacmd set-default-${mode} ${selected}
 # thus we have to assign each sink input to the new sink
 pactl list short sink-inputs | while read stream; do
 	stream_id=$(echo $stream | cut '-d ' -f1)
-	pactl move-sink-input "$stream_id" "alsa_output.${selected}"
+	pactl move-sink-input "$stream_id" "${selected}"
 done
