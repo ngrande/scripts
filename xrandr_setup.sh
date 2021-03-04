@@ -25,8 +25,9 @@
 #done
 
 if [ $(xrandr --query | grep ' connected' | wc -l) -ge 2 ];
+then
 	xrandr --output DP-1 --auto --primary
-	xrandr --output eDP-1 --off
+	xrandr --output eDP-1 --auto --right-of DP-1
 fi
 
 
