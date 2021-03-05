@@ -6,7 +6,7 @@ if [ "$BLOCK_BUTTON" == "1" ];
 then
 	walldir=$1"/"
 
-	pictures=$(ls ${walldir} | grep -E "*\.(jpg|png)")
+	pictures=$(ls ${walldir} | grep -E "*\.(jpg|png|web*)")
 	lines=$(echo  "$pictures" | wc --lines)
 
 	# find the currently set wallpaper (index)
